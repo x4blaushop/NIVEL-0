@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const status = document.getElementById("status");
-  status.textContent = "EXISTÊNCIA CONFIRMADA";
+
+  setTimeout(() => {
+    status.textContent = "Núcleo operacional";
+  }, 800);
 });
