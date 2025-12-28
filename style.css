@@ -1,21 +1,29 @@
-/* RESET */
+/* === MATRIX DNA VISUAL APERFEIÇOADO === */
+
+:root {
+  --matrix-green: #00ff88;
+  --matrix-bg: #000;
+  --scanline-opacity: 0.06;
+  --terminal-bg: rgba(0, 0, 0, 0.88);
+}
+
+/* RESET ESTÁVEL */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* BASE */
+/* FUNDO GERAL */
 html, body {
   width: 100%;
   height: 100%;
+  background: var(--matrix-bg);
   font-family: "Courier New", monospace;
-  background: black;
-  color: #00ff88;
   overflow: hidden;
 }
 
-/* MATRIX CANVAS */
+/* CHUVA MATRIX (canvas) */
 #matrix {
   position: fixed;
   top: 0;
@@ -25,59 +33,82 @@ html, body {
   z-index: 0;
 }
 
+/* SCANLINES (LINHAS LEVES) */
+#scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(0, 0, 0, var(--scanline-opacity)) 2px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* CONTEÚDO FLUTUANTE */
 .content {
   position: relative;
-  z-index: 1;
-  min-height: 100vh;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 48px 24px;
+  min-height: 100vh;
+  padding: 50px 20px;
+  text-align: center;
 }
 
 /* HEADER */
 header h1 {
-  font-size: 2rem;
-  letter-spacing: 4px;
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+  color: var(--matrix-green);
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.6),
+               0 0 16px rgba(0, 255, 136, 0.4);
+  letter-spacing: 0.18em;
 }
 
-.sub {
-  margin-top: 8px;
-  font-size: 0.9rem;
+header p {
+  margin-top: 6px;
   opacity: 0.7;
+  font-size: 0.9rem;
 }
 
-/* MAIN */
-main {
+/* MAIN STATUS */
+main section {
   margin-top: 80px;
 }
 
-section h2 {
+main section h2 {
   font-size: 1.2rem;
-  margin-bottom: 12px;
   opacity: 0.85;
+  letter-spacing: 0.06em;
 }
 
 #status {
+  margin-top: 10px;
+  color: var(--matrix-green);
+  font-family: monospace;
   font-size: 1rem;
   text-shadow: 0 0 6px rgba(0, 255, 136, 0.5);
 }
 
-/* FOOTER */
+/* RODAPÉ */
 footer {
-  font-size: 0.75rem;
-  opacity: 0.4;
+  opacity: 0.5;
+  font-size: 0.78rem;
+  margin-top: 30px;
 }
 
-/* MOBILE */
+/* MOBILE ADJUST */
 @media (max-width: 600px) {
   header h1 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
-
-  main {
+  main section {
     margin-top: 60px;
   }
 }
