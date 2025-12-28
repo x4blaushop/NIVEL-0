@@ -1,47 +1,94 @@
+/* =========================
+   DNA VISUAL — NÍVEL 0
+   ========================= */
+
+:root {
+  --bg-dark: #0f0f0f;
+  --text-light: #f2f2f2;
+  --x4-green: #00ff88;
+}
+
+/* RESET BÁSICO */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
+/* BASE */
 body {
-  background: #0d0d0d;
-  color: #eaeaea;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
+  min-height: 100vh;
+
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  justify-content: space-between;
 }
 
-header, footer {
+/* HEADER */
+header {
+  padding: 3rem 1rem 2rem;
   text-align: center;
-  padding: 20px;
-  background: #111;
 }
 
+header h1 {
+  color: var(--x4-green);
+  letter-spacing: 0.18em;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  text-shadow: 0 0 6px rgba(0, 255, 136, 0.35);
+}
+
+header p {
+  margin-top: 0.6rem;
+  opacity: 0.75;
+  font-size: 0.9rem;
+}
+
+/* MAIN */
 main {
   flex: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
-section {
-  border: 1px solid #333;
-  padding: 30px;
+#existencia {
   text-align: center;
+  padding: 2rem;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
+#existencia h2 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
 }
 
-h2 {
-  margin-bottom: 15px;
-}
-
+/* STATUS — núcleo */
 #status {
-  font-size: 1.2rem;
-  color: #00ff88;
+  color: var(--x4-green);
+  font-family: monospace;
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+/* FOOTER */
+footer {
+  padding: 1.2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* RESPONSIVO (mobile first já está ativo, aqui só ajuste fino) */
+@media (max-width: 480px) {
+  header {
+    padding-top: 2.2rem;
+  }
+
+  #existencia {
+    padding: 1.5rem;
+  }
 }
