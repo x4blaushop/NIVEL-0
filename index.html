@@ -1,10 +1,211 @@
-<main>
-  <section class="nucleo">
-    <h1>PLANET OF ARCHITECT</h1>
-    <h2>NÍVEL 0</h2>
-    <p>Estás diante da porta.<br>
-    Nada aqui começa.<br>
-    Nada aqui termina.<br>
-    Apenas existe.</p>
-  </section>
-</main>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NÍVEL 0</title>
+
+  <style>
+    :root {
+      --neon-green: #62ff8a;
+      --bg-dark: #000;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--neon-green);
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+
+    canvas#matrix {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* Campo gravitacional */
+    .gravity-core {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          circle at center,
+          rgba(0,0,0,0.95) 0%,
+          rgba(0,0,0,0.85) 25%,
+          rgba(0,0,0,0.4) 45%,
+          transparent 65%
+        );
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 1; }
+    }
+
+    .portal-layer {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      gap: 24px;
+      padding: 20px;
+    }
+
+    .door-btn {
+      padding: 14px 28px;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(98,255,138,0.35);
+      transition: all 0.3s ease;
+    }
+
+    .door-btn:hover {
+      background: var(--neon-green);
+      color: #000;
+      box-shadow: 0 0 24px rgba(98,255,138,0.8);
+    }
+
+    .warning {
+      max-width: 560px;
+      background: rgba(0,0,0,0.8);
+      border: 1px solid var(--neon-green);
+      padding: 22px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      display: none;
+      box-shadow: 0 0 20px rgba(98,255,138,0.25);
+    }
+
+    .confirm-btn {
+      margin-top: 18px;
+      padding: 10px 22px;
+      font-size: 0.8rem;
+      background: transparent;
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .confirm-btn:hover {
+      background: var(--neon-green);
+      color: #000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <canvas id="matrix"></canvas>
+  <div class="gravity-core"></div>
+
+  <div class="portal-layer">
+    <button class="door-btn" id="openDoor">ATRAVESSAR</button>
+
+    <div class="warning" id="warningBox">
+      <p>
+        Ao atravessar esta porta, você entra em um ambiente diferente do comum.<br><br>
+        Nada aqui compete com o mundo que você já conhece.<br>
+        Ele apenas o reorganiza.<br><br>
+        Não há garantias.<br>
+        Não há atalhos.<br><br>
+        Se decidir seguir, siga com integridade.
+      </p>
+
+      <button class="confirm-btn" id="confirmEntry">
+        PROSSEGUIR
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* MATRIX COM GRAVIDADE CENTRAL */
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const letters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const fontSize = 14;
+    const columns = () => Math.floor(canvas.width / fontSize);
+    let drops = [];
+
+    function initDrops() {
+      drops = Array(columns()).fill(1);
+    }
+    initDrops();
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#62ff8a';
+      ctx.font = fontSize + 'px Courier New';
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      drops.forEach((y, i) => {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        const x = i * fontSize;
+
+        // força gravitacional sutil
+        const dx = centerX - x;
+        const dy = centerY - y * fontSize;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        const gravity = Math.min(1.2, 120 / dist);
+
+        ctx.fillText(text, x + dx * gravity * 0.002, y * fontSize + dy * gravity * 0.002);
+
+        if (y * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      });
+    }
+
+    setInterval(drawMatrix, 40);
+
+    /* PORTA */
+    const openDoor = document.getElementById('openDoor');
+    const warningBox = document.getElementById('warningBox');
+    const confirmEntry = document.getElementById('confirmEntry');
+
+    openDoor.addEventListener('click', () => {
+      openDoor.style.display = 'none';
+      warningBox.style.display = 'block';
+    });
+
+    confirmEntry.addEventListener('click', () => {
+      // destino futuro
+      // window.location.href = '../NIVEL1/';
+      alert('A travessia será definida.');
+    });
+  </script>
+
+</body>
+</html>
