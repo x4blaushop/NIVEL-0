@@ -2,52 +2,48 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NÍVEL 0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 :root {
-  --neon: #62ff8a;
-  --bg: #000;
+  --green: #62ff8a;
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  background: black;
   overflow: hidden;
   height: 100%;
-  font-family: monospace;
+  font-family: "Courier New", monospace;
 }
 
 canvas {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
+  z-index: 1;
 }
 
-#center {
+#portal {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 5;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
 }
 
-#btn {
+#core {
+  position: relative;
   padding: 14px 26px;
-  background: transparent;
-  border: 1px solid var(--neon);
-  color: var(--neon);
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  color: var(--green);
+  border: 1px solid var(--green);
+  background: rgba(0,0,0,0.8);
+  box-shadow: 0 0 25px rgba(98,255,138,.6);
   cursor: pointer;
-  box-shadow: 0 0 25px rgba(98,255,138,0.4);
-}
-
-#btn:hover {
-  background: var(--neon);
-  color: #000;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 </style>
 </head>
@@ -56,87 +52,75 @@ canvas {
 
 <canvas id="matrix"></canvas>
 
-<div id="center">
-  <a href="../PLANET-OF-ARCHITECT/">
-    <button id="btn">ATRAVESSAR</button>
-  </a>
+<div id="portal">
+  <a id="core" href="../PLANET-OF-ARCHITECT/">ATRAVESSAR</a>
 </div>
 
 <script>
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
-
-let w, h;
-function resize() {
-  w = canvas.width = window.innerWidth;
-  h = canvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resize);
 resize();
 
+window.addEventListener("resize", resize);
+
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const letters = [];
+const particles = [];
 
-const center = {
-  x: () => w / 2,
-  y: () => h / 2,
-  radius: 80
-};
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
 
-function spawnLetter() {
+function spawnParticle() {
   const side = Math.floor(Math.random() * 4);
   let x, y;
 
-  if (side === 0) { x = Math.random() * w; y = -20; }
-  if (side === 1) { x = w + 20; y = Math.random() * h; }
-  if (side === 2) { x = Math.random() * w; y = h + 20; }
-  if (side === 3) { x = -20; y = Math.random() * h; }
+  if (side === 0) { x = Math.random() * canvas.width; y = -20; }
+  if (side === 1) { x = canvas.width + 20; y = Math.random() * canvas.height; }
+  if (side === 2) { x = Math.random() * canvas.width; y = canvas.height + 20; }
+  if (side === 3) { x = -20; y = Math.random() * canvas.height; }
 
-  letters.push({
-    x,
-    y,
-    vx: 0,
-    vy: 0,
+  particles.push({
+    x, y,
     char: chars[Math.floor(Math.random() * chars.length)],
-    life: Math.random() * 200 + 100
+    speed: Math.random() * 0.8 + 0.4,
+    alpha: 1
   });
 }
 
 function update() {
-  ctx.fillStyle = "rgba(0,0,0,0.15)";
-  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = "rgba(0,0,0,0.25)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  if (letters.length < 500) spawnLetter();
+  const rect = document.getElementById("core").getBoundingClientRect();
+  const targetX = rect.left + rect.width / 2;
+  const targetY = rect.top + rect.height / 2;
 
-  for (let i = letters.length - 1; i >= 0; i--) {
-    const l = letters[i];
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
 
-    const dx = center.x() - l.x;
-    const dy = center.y() - l.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
+    const dx = targetX - p.x;
+    const dy = targetY - p.y;
+    const dist = Math.hypot(dx, dy);
 
-    if (dist > center.radius) {
-      const force = Math.min(0.08, 120 / dist);
-      l.vx += dx * force * 0.002;
-      l.vy += dy * force * 0.002;
+    if (dist < rect.width * 0.6) {
+      particles.splice(i,1);
+      continue;
     }
 
-    l.x += l.vx;
-    l.y += l.vy;
+    p.x += (dx / dist) * p.speed * 1.8;
+    p.y += (dy / dist) * p.speed * 1.8;
+    p.alpha *= 0.992;
 
-    ctx.fillStyle = "#62ff8a";
-    ctx.fillText(l.char, l.x, l.y);
-
-    l.life--;
-    if (l.life <= 0 || dist < center.radius + 10) {
-      letters.splice(i, 1);
-    }
+    ctx.fillStyle = `rgba(98,255,138,${p.alpha})`;
+    ctx.fillText(p.char, p.x, p.y);
   }
 
+  if (particles.length < 500) spawnParticle();
   requestAnimationFrame(update);
 }
 
-ctx.font = "14px monospace";
+ctx.font = "14px Courier New";
 update();
 </script>
 
