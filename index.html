@@ -2,24 +2,33 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X4_NIVEL_0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X4_GATE_LEVEL_0</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <canvas id="portalCanvas"></canvas>
-    <main style="position: relative; text-align: center; padding-top: 20vh;">
-        <h1>NÍVEL 0</h1>
-        <p>CONEXÃO DETECTADA. SINCRONIZE PARA ENTRAR.</p>
-        <br>
-        <a href="https://x4blaushop.github.io/ESTADO-0-ATRIO-DO-INFITINO/" class="owner-link">
-            CONFIRMAR ACESSO ➡
-        </a>
+    <main>
+        <section class="section">
+            <h1>UNIT_GATE_0</h1>
+            <p>CONEXÃO DETECTADA. IDENTIDADE MATRIX ATIVA.</p>
+        </section>
+        <section class="section">
+            <div class="portals">
+                <a href="https://x4blaushop.github.io/ESTADO-0-ATRIO-DO-INFITINO/" class="owner-link">
+                    CONFIRMAR ACESSO ➡
+                </a>
+            </div>
+        </section>
+        <section class="section status">
+            <p>DNA_AUTH: C3_X4_STABLE</p>
+        </section>
     </main>
     <script src="script.js"></script>
     <script>
-        // Mantém a regra do alerta bloqueante no primeiro contato
-        window.onload = () => { alert("⚠️ SISTEMA: Porta 01 detectada. Sincronização requerida."); };
+        window.onload = () => { 
+            alert("⚠️ SISTEMA: DNA Matrix detectado (C3/X4). Sincronizando Porta 01."); 
+        };
     </script>
 </body>
 </html>
