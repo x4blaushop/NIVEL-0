@@ -1,39 +1,54 @@
-const canvas = document.getElementById("matrix");
+const canvas = document.getElementById("portalCanvas");
 const ctx = canvas.getContext("2d");
+let w, h, particles = [];
+// DNA resgatado das casas C3 e X4
+const dnaChars = "X4C3DNA77701".split(""); 
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const letters = "01";
-const fontSize = 14;
-const columns = canvas.width / fontSize;
-const drops = [];
-
-for (let x = 0; x < columns; x++) {
-  drops[x] = 1;
-}
-
-function drawMatrix() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "#62ff8a";
-  ctx.font = fontSize + "px monospace";
-
-  for (let i = 0; i < drops.length; i++) {
-    const text = letters.charAt(Math.floor(Math.random() * letters.length));
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-      drops[i] = 0;
+function init() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    particles = [];
+    // Aumentamos a densidade para 1500 para o impacto Matrix ser total
+    for(let i = 0; i < 1500; i++) { 
+        particles.push({
+            r: Math.random() * Math.max(w, h),
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.005,
+            size: Math.random() * 14 + 10,
+            c: dnaChars[Math.floor(Math.random() * dnaChars.length)]
+        });
     }
-    drops[i]++;
-  }
 }
 
-setInterval(drawMatrix, 50);
+function draw() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.fillRect(0, 0, w, h);
+    // Lê a cor verde do CSS para renderizar a Identidade Matrix
+    const themeColor = getComputedStyle(document.body).color;
 
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
+    particles.forEach(p => {
+        p.angle += p.speed;
+        p.r -= 2.8; 
+        if(p.r < 45) p.r = Math.max(w, h) * 0.9;
+        const x = w/2 + Math.cos(p.angle) * p.r;
+        const y = h/2 + Math.sin(p.angle) * p.r;
+        ctx.fillStyle = themeColor;
+        ctx.font = p.size + "px monospace";
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = themeColor;
+        ctx.fillText(p.c, x, y);
+    });
+
+    // O centro do Horizonte de Eventos
+    ctx.beginPath();
+    ctx.arc(w/2, h/2, 50, 0, Math.PI * 2);
+    ctx.fillStyle = "#000";
+    ctx.fill();
+    ctx.shadowBlur = 80;
+    ctx.shadowColor = themeColor;
+    ctx.stroke();
+    requestAnimationFrame(draw);
+}
+window.addEventListener("resize", init);
+init();
+draw();
