@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="pacified-alert" class="toast">Sincronização Matrix C3/X4 concluída com sucesso.</div>
+
     <canvas id="portalCanvas"></canvas>
     <main>
         <section class="section">
             <h1>UNIT_GATE_0</h1>
-            <p>CONEXÃO DETECTADA. IDENTIDADE MATRIX ATIVA.</p>
+            <p>CONEXÃO ESTABELECIDA. BEM-VINDO AO NÍVEL ZERO.</p>
         </section>
         <section class="section">
             <div class="portals">
@@ -20,14 +22,15 @@
                 </a>
             </div>
         </section>
-        <section class="section status">
-            <p>DNA_AUTH: C3_X4_STABLE</p>
-        </section>
     </main>
+
     <script src="script.js"></script>
     <script>
-        window.onload = () => { 
-            alert("⚠️ SISTEMA: DNA Matrix detectado (C3/X4). Sincronizando Porta 01."); 
+        // Ativação da mensagem pacífica sem travar o sistema
+        window.onload = () => {
+            const toast = document.getElementById('pacified-alert');
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
         };
     </script>
 </body>
